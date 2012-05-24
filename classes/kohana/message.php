@@ -28,7 +28,7 @@ class Kohana_Message {
 	 * @param   array   any options for the message
 	 * @return  void
 	 */
-	public static function set($type, $text, array $options = NULL)
+	public static function set($type, $text, array $attributes = NULL)
 	{
 		// Load existing messages
 		$messages = (array) Message::get();
@@ -37,7 +37,7 @@ class Kohana_Message {
 		$messages[] = (object) array(
 			'type'    => $type,
 			'text'    => $text,
-			'options' => (array) $options,
+			'attributes' => (array) $attributes,
 		);
 
 		// Store the updated messages
