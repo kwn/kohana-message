@@ -10,93 +10,94 @@
  */
 class Kohana_Message {
 
-	/**
-	 * @var  string  default session key used for storing messages
-	 */
-	public static $session_key = 'message';
+    /**
+     * @var  string  default session key used for storing messages
+     */
+    public static $session_key = 'message';
 
-	// Message types
-	const SUCCESS = 'success';
-	const NOTICE  = 'notice';
-	const ERROR   = 'error';
+    // Message types
+    const SUCCESS = 'alert-success';
+    const INFO    = 'alert-info';
+    const WARNING = 'alert-warning'; // dummy
+    const ERROR   = 'alert-error';
 
-	/**
-	 * Adds a new message.
-	 *
-	 * @param   string  message type (e.g. Message::SUCCESS)
-	 * @param   string  message text
-	 * @param   array   any options for the message
-	 * @return  void
-	 */
-	public static function set($type, $text, array $attributes = NULL)
-	{
-		// Load existing messages
-		$messages = (array) Message::get();
+    /**
+     * Adds a new message.
+     *
+     * @param   string  message type (e.g. Message::SUCCESS)
+     * @param   string  message text
+     * @param   array   any options for the message
+     * @return  void
+     */
+    public static function set($type, $text, array $attributes = NULL)
+    {
+        // Load existing messages
+        $messages = (array) Message::get();
 
-		// Add new message
-		$messages[] = (object) array(
-			'type'    => $type,
-			'text'    => $text,
-			'attributes' => (array) $attributes,
-		);
+        // Add new message
+        $messages[] = (object) array(
+            'type'    => $type,
+            'text'    => $text,
+            'attributes' => (array) $attributes,
+        );
 
-		// Store the updated messages
-		Session::instance()->set(Message::$session_key, $messages);
-	}
+        // Store the updated messages
+        Session::instance()->set(Message::$session_key, $messages);
+    }
 
-	/**
-	 * Returns all messages.
-	 *
-	 * @return  array or NULL
-	 */
-	public static function get()
-	{
-		return Session::instance()->get(Message::$session_key);
-	}
+    /**
+     * Returns all messages.
+     *
+     * @return  array or NULL
+     */
+    public static function get()
+    {
+        return Session::instance()->get(Message::$session_key);
+    }
 
-	/**
-	 * Clears all messages.
-	 *
-	 * @return  void
-	 */
-	public static function clear()
-	{
-		Session::instance()->delete(Message::$session_key);
-	}
+    /**
+     * Clears all messages.
+     *
+     * @return  void
+     */
+    public static function clear()
+    {
+        Session::instance()->delete(Message::$session_key);
+    }
 
-	/**
-	 * Renders the message(s), and by default clears them too.
-	 *
-	 * @param   mixed    string of the view to use, or a Kohana_View object
-	 * @param   boolean  set to FALSE to not clear messages
-	 * @return  string   message output (HTML)
-	 */
-	public static function render($view = NULL, $clear = TRUE)
-	{
-		// Nothing to render
-		if (($messages = Message::get()) === NULL)
-			return '';
+    /**
+     * Renders the message(s), and by default clears them too.
+     *
+     * @param   mixed    string of the view to use, or a Kohana_View object
+     * @param   boolean  set to FALSE to not clear messages
+     * @return  string   message output (HTML)
+     */
+    public static function render($view = NULL, $clear = TRUE)
+    {
+        // Nothing to render
+        if (($messages = Message::get()) === NULL)
+            return '';
 
-		// Clear all messages
-		if ($clear)
-		{
-			Message::clear();
-		}
+        // Clear all messages
+        if ($clear)
+        {
+            Message::clear();
+        }
 
-		if ($view === NULL)
-		{
-			// Use the default view
-			$view = 'message/basic';
-		}
+        if ($view === NULL)
+        {
+            // Use the default view
+            $view = 'message/basic';
+        }
 
-		if ( ! $view instanceof Kohana_View)
-		{
-			// Load the view file
-			$view = View::factory($view);
-		}
+        if ( ! $view instanceof Kohana_View)
+        {
+            // Load the view file
+            $view = View::factory($view);
+        }
 
-		// Return the rendered view
-		return $view->set('messages', $messages)->render();
-	}
+        // Return the rendered view
+        return $view->set('messages', $messages)->render();
+    }
 
 }
